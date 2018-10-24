@@ -431,7 +431,11 @@ MediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
       connConfig.rtcpMuxPolicy = config.rtcpMuxPolicy;
     }
 
-    this.peerConnection = new SIP.WebRTC.RTCPeerConnection(connConfig);
+    // Enable DSCP packet marking
+    var connConstraints = {};
+    connConstraints.optional = [{ googDscp: true }];
+
+    this.peerConnection = new SIP.WebRTC.RTCPeerConnection(connConfig, connConstraints);
 
     // Firefox (35.0.1) sometimes throws on calls to peerConnection.getRemoteStreams
     // even if peerConnection.onaddstream was just called. In order to make

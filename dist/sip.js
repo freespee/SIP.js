@@ -1,6 +1,6 @@
 /*
- * SIP version 0.7.8
- * Copyright (c) 2014-2017 Junction Networks, Inc <http://www.onsip.com>
+ * SIP version 0.7.9
+ * Copyright (c) 2014-2018 Junction Networks, Inc <http://www.onsip.com>
  * Homepage: http://sipjs.com
  * License: http://sipjs.com/license/
  *
@@ -340,7 +340,7 @@ module.exports={
   "name": "sip.js",
   "title": "SIP.js",
   "description": "A simple, intuitive, and powerful JavaScript signaling library",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "main": "src/index.js",
   "browser": {
     "./src/environment.js": "./src/environment_browser.js"
@@ -349,12 +349,12 @@ module.exports={
   "author": "OnSIP <developer@onsip.com> (http://sipjs.com/authors/)",
   "contributors": [
     {
-      "url": "https://github.com/onsip/SIP.js/blob/master/THANKS.md"
+      "url": "https://github.com/freespee/SIP.js/blob/master/THANKS.md"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/onsip/SIP.js.git"
+    "url": "https://github.com/freespee/SIP.js.git"
   },
   "keywords": [
     "sip",
@@ -11452,7 +11452,11 @@ MediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
       connConfig.rtcpMuxPolicy = config.rtcpMuxPolicy;
     }
 
-    this.peerConnection = new SIP.WebRTC.RTCPeerConnection(connConfig);
+    // Enable DSCP packet marking
+    var connConstraints = {};
+    connConstraints.optional = [{ googDscp: true }];
+
+    this.peerConnection = new SIP.WebRTC.RTCPeerConnection(connConfig, connConstraints);
 
     // Firefox (35.0.1) sometimes throws on calls to peerConnection.getRemoteStreams
     // even if peerConnection.onaddstream was just called. In order to make
